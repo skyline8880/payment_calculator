@@ -1,7 +1,7 @@
 import calendar
 import datetime as dt
 import os
-import sys
+import sys, io
 
 from kivy.animation import Animation
 from kivymd.app import MDApp
@@ -21,6 +21,8 @@ def resource_path(relative_path):
 custom_img = resource_path('debt.png')
 custom_icon = resource_path('debt_ico.ico')
 
+buffer = io.StringIO()
+sys.stdout = sys.stderr = buffer
 
 class DebtCounterApp(MDApp):
     def __init__(self, **kwargs):
