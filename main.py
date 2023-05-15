@@ -3,13 +3,17 @@ import datetime as dt
 import os
 import sys
 import logging
+import locale
 
+from kivy.clock import Clock
 from kivy.animation import Animation
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.toolbar import MDTopAppBar
+
+locale.setlocale(locale.LC_ALL, '')
 
 
 def resource_path(relative_path):
@@ -21,6 +25,36 @@ def resource_path(relative_path):
 
 custom_img = resource_path('debt.png')
 custom_icon = resource_path('debt_ico.ico')
+
+
+class LoanValueInput(MDTextField):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.input_filter = "int"
+
+    def delete_selection():
+        print('gud')
+
+    def insert_text(self, substring, from_undo = False):
+            if not substring.isdigit():
+                return
+            else:
+                cursor_column, cusror_row = self.cursor
+                text = self._lines[cusror_row]
+                t = text[:cursor_column] + substring + text[cursor_column:]
+                t = "".join(t.split())
+                x = f"{int(t):n}"
+                if len(x) == 21:
+                    return
+                elif str(x).startswith('0'):
+                    return
+                super().insert_text(substring, from_undo = from_undo)
+                self._set_line_text(cusror_row, x)
+                Clock.schedule_once(lambda dt : setattr(self, "cursor", (cursor_column + 2, cusror_row)))
+
+
+
+
 
 class DebtCounterApp(MDApp):
     def __init__(self, **kwargs):
@@ -42,15 +76,7 @@ class DebtCounterApp(MDApp):
             self.outro_anim4(self.payment_hole_period)
 
         try:
-            for input in [self.loan_input, self.terms_input]:
-                if input.text.startswith("0"):
-                    input.text = ""
-            if int(self.interest_input.text) < 1:
-                self.interest_input.text = "1"
-            elif int(self.interest_input.text) > 100:
-                self.interest_input.text = "100"
-
-            loan = int(self.loan_input.text)
+            loan = int("".join(self.loan_input.text.split()))
             terms = int(self.terms_input.text)
             interest = float(self.interest_input.text)
             today = dt.datetime.today()
@@ -244,7 +270,7 @@ class DebtCounterApp(MDApp):
             "English", "Русский", "Тоҷикӣ"
         ]
 
-        self.loan_input = MDTextField(
+        self.loan_input = LoanValueInput(
             hint_text=self.appLanguage[self.lang]["loanvalue"],
             input_filter="int",
             write_tab=False,
