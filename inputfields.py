@@ -1,6 +1,7 @@
-from kivymd.uix.textfield import MDTextField
-from kivy.clock import Clock
 import locale
+
+from kivy.clock import Clock
+from kivymd.uix.textfield import MDTextField
 
 locale.setlocale(locale.LC_ALL, '')
 

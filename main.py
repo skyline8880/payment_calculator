@@ -1,19 +1,18 @@
 import calendar
 import datetime as dt
+import locale
 import os
 import sys
-import logging
-import locale
-
 from decimal import Decimal
-from kivy.clock import Clock
+
 from kivy.animation import Animation
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.textfield import MDTextField
 from kivymd.uix.toolbar import MDTopAppBar
-from inputfields import LoanValueInput, TermsValueInput, InterestValueInput, OutputValue
+
+from inputfields import (InterestValueInput, LoanValueInput, OutputValue,
+                         TermsValueInput)
 
 locale.setlocale(locale.LC_ALL, '')
 
