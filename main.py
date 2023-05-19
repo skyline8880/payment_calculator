@@ -5,6 +5,7 @@ import sys
 import logging
 import locale
 
+from decimal import Decimal
 from kivy.clock import Clock
 from kivy.animation import Animation
 from kivymd.app import MDApp
@@ -12,6 +13,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.toolbar import MDTopAppBar
+from inputfields import LoanValueInput, TermsValueInput, InterestValueInput, OutputValue
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -25,35 +27,6 @@ def resource_path(relative_path):
 
 custom_img = resource_path('debt.png')
 custom_icon = resource_path('debt_ico.ico')
-
-
-class LoanValueInput(MDTextField):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.input_filter = "int"
-
-    def delete_selection():
-        print('gud')
-
-    def insert_text(self, substring, from_undo = False):
-            if not substring.isdigit():
-                return
-            else:
-                cursor_column, cusror_row = self.cursor
-                text = self._lines[cusror_row]
-                t = text[:cursor_column] + substring + text[cursor_column:]
-                t = "".join(t.split())
-                x = f"{int(t):n}"
-                if len(x) == 21:
-                    return
-                elif str(x).startswith('0'):
-                    return
-                super().insert_text(substring, from_undo = from_undo)
-                self._set_line_text(cusror_row, x)
-                Clock.schedule_once(lambda dt : setattr(self, "cursor", (cursor_column + 2, cusror_row)))
-
-
-
 
 
 class DebtCounterApp(MDApp):
@@ -87,14 +60,17 @@ class DebtCounterApp(MDApp):
                     loan * ((interest_per_month *
                              ((1 + interest_per_month) ** terms)) /
                              (((1 + interest_per_month) ** terms) - 1))), 2)
-                self.payment_per_month.text = str(annuity_payment)
+                self.payment_per_month.text = str(
+                    f"{(round(Decimal(annuity_payment), 2)):n}".replace(",", ".")
+                    )
                 self.interest_a_day.text = str(
-                    round(((interest_per_month / num_of_days_in_month) * loan), 2))
+                    f"{(round(Decimal((interest_per_month / num_of_days_in_month) * loan), 2)):n}".replace(",", ".")
+                    )
                 self.interest_hole_period.text = str(
-                    round(((annuity_payment * terms) - loan), 2)
+                    f"{(round(Decimal((annuity_payment * terms) - loan), 2)):n}".replace(",", ".")
                 )
                 self.payment_hole_period.text = str(
-                    round((annuity_payment * terms), 2)
+                    f"{(round(Decimal(annuity_payment * terms), 2)):n}".replace(",", ".")
                 )
                 self.intro_anim(self.payment_per_month)
                 self.intro_anim2(self.interest_a_day)
@@ -104,9 +80,11 @@ class DebtCounterApp(MDApp):
                 loan_per_month = loan / terms
                 interest_per_month = (loan * (interest/100) * num_of_days_in_month) / 365
                 self.payment_per_month.text = str(
-                    round(float(loan_per_month + interest_per_month), 2))
+                    f"{(round(Decimal(loan_per_month + interest_per_month), 2)):n}".replace(",", ".")
+                    )
                 self.interest_a_day.text = str(
-                    round((interest_per_month / num_of_days_in_month), 2))
+                    f"{(round(Decimal(interest_per_month / num_of_days_in_month), 2)):n}".replace(",", ".")
+                    )
                 list_of_payments = []
                 month_counter = 0
                 loan_cut = 0
@@ -127,9 +105,11 @@ class DebtCounterApp(MDApp):
                     loan_cut += loan_per_month
                     month_counter += 1
                 self.interest_hole_period.text = str(
-                    round((sum(list_of_payments) - loan), 2))
+                    f"{(round(Decimal(sum(list_of_payments) - loan), 2)):n}".replace(",", ".")
+                    )
                 self.payment_hole_period.text = str(
-                    round((sum(list_of_payments)), 2))
+                    f"{(round(Decimal(sum(list_of_payments)), 2)):n}".replace(",", ".")
+                    )
                 self.intro_anim(self.payment_per_month)
                 self.intro_anim2(self.interest_a_day)
                 self.intro_anim3(self.interest_hole_period)
@@ -197,13 +177,13 @@ class DebtCounterApp(MDApp):
             self.toolbar.title = self.appLanguage[self.lang]["annuity"]
         else:
             self.toolbar.title = self.appLanguage[self.lang]["differentiated"]
-        self.loan_input.hint_text = self.appLanguage[self.lang]["loanvalue"]
-        self.terms_input.hint_text = self.appLanguage[self.lang]["terms"]
-        self.interest_input.hint_text = self.appLanguage[self.lang]["interest"]
-        self.payment_per_month.hint_text = self.appLanguage[self.lang]["monthlypayment"]
-        self.interest_a_day.hint_text = self.appLanguage[self.lang]["interestday"]
-        self.interest_hole_period.hint_text = self.appLanguage[self.lang]["interestperiod"]
-        self.payment_hole_period.hint_text = self.appLanguage[self.lang]["paymentperiod"]
+        self.loan_input.helper_text = self.appLanguage[self.lang]["loanvalue"]
+        self.terms_input.helper_text = self.appLanguage[self.lang]["terms"]
+        self.interest_input.helper_text = self.appLanguage[self.lang]["interest"]
+        self.payment_per_month.helper_text = self.appLanguage[self.lang]["monthlypayment"]
+        self.interest_a_day.helper_text = self.appLanguage[self.lang]["interestday"]
+        self.interest_hole_period.helper_text = self.appLanguage[self.lang]["interestperiod"]
+        self.payment_hole_period.helper_text = self.appLanguage[self.lang]["paymentperiod"]
         self.menu.dismiss()
 
     def build(self):
@@ -271,27 +251,19 @@ class DebtCounterApp(MDApp):
         ]
 
         self.loan_input = LoanValueInput(
-            hint_text=self.appLanguage[self.lang]["loanvalue"],
-            input_filter="int",
-            write_tab=False,
-            multiline=False,
-            halign="left",
+            helper_text=self.appLanguage[self.lang]["loanvalue"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": 0.5, "center_y":0.82},
         )
         self.loan_input.bind(text=self.calculate)
-        self.terms_input = MDTextField(
-            hint_text=self.appLanguage[self.lang]["terms"],
-            input_filter="int",
-            write_tab=False,
-            multiline=False,
-            halign="left",
+        self.terms_input = TermsValueInput(
+            helper_text=self.appLanguage[self.lang]["terms"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": 0.5, "center_y":0.75},
         )
         self.terms_input.bind(text=self.calculate)
-        self.interest_input = MDTextField(
-            hint_text=self.appLanguage[self.lang]["interest"],
+        self.interest_input = InterestValueInput(
+            helper_text=self.appLanguage[self.lang]["interest"],
             input_filter="float",
             write_tab=False,
             multiline=False,
@@ -305,31 +277,23 @@ class DebtCounterApp(MDApp):
         self.screen.add_widget(self.terms_input)
         self.screen.add_widget(self.interest_input)
 
-        self.payment_per_month = MDTextField(
-            readonly=True,
-            hint_text=self.appLanguage[self.lang]["monthlypayment"],
-            halign="left",
+        self.payment_per_month = OutputValue(
+            helper_text=self.appLanguage[self.lang]["monthlypayment"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": -1, "center_y": 0.56},
         )
-        self.interest_a_day = MDTextField(
-            readonly=True,
-            hint_text=self.appLanguage[self.lang]["interestday"],
-            halign="left",
+        self.interest_a_day = OutputValue(
+            helper_text=self.appLanguage[self.lang]["interestday"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": -1, "center_y": 0.49},
         )
-        self.interest_hole_period = MDTextField(
-            readonly=True,
-            hint_text=self.appLanguage[self.lang]["interestperiod"],
-            halign="left",
+        self.interest_hole_period = OutputValue(
+            helper_text=self.appLanguage[self.lang]["interestperiod"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": -1, "center_y": 0.42},
         )
-        self.payment_hole_period = MDTextField(
-            readonly=True,
-            hint_text=self.appLanguage[self.lang]["paymentperiod"],
-            halign="left",
+        self.payment_hole_period = OutputValue(
+            helper_text=self.appLanguage[self.lang]["paymentperiod"],
             size_hint=(0.3, 1),
             pos_hint={"center_x": -1, "center_y": 0.35},
         )
