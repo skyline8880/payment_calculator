@@ -1,8 +1,7 @@
 import calendar
 import datetime as dt
 import locale
-import os
-import sys
+import os, sys
 from decimal import Decimal
 
 from kivy.animation import Animation
@@ -226,7 +225,6 @@ class DebtCounterApp(MDApp):
             }
         }
 
-
         self.title = self.appLanguage[self.lang]["appname"]
         self.icon = custom_img
         self.state = 1
@@ -302,8 +300,7 @@ class DebtCounterApp(MDApp):
         self.screen.add_widget(self.interest_hole_period)
         self.screen.add_widget(self.payment_hole_period)
         return self.screen
-
+    
 
 if __name__ == '__main__':
     DebtCounterApp().run()
-
