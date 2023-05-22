@@ -1,7 +1,7 @@
 import calendar
 import datetime as dt
-import locale
-import os, sys
+import os
+import sys
 from decimal import Decimal
 
 from kivy.animation import Animation
@@ -12,8 +12,6 @@ from kivymd.uix.toolbar import MDTopAppBar
 
 from inputfields import (InterestValueInput, LoanValueInput, OutputValue,
                          TermsValueInput)
-
-locale.setlocale(locale.LC_ALL, '')
 
 
 def resource_path(relative_path):
