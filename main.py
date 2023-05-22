@@ -203,7 +203,7 @@ class DebtCounterApp(MDApp):
                 "differentiated": "Дифференцированный кредит",
                 "loanvalue": "Сумма кредита",
                 "terms": "Срок кредита",
-                "interest": "Процентаная ставка",
+                "interest": "Процентная ставка",
                 "monthlypayment": "Ежемесячный платёж",
                 "interestday": "Сумма процента в день",
                 "interestperiod": "Сумма процентов за весь период",
