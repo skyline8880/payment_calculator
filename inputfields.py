@@ -14,10 +14,20 @@ class LoanValueInput(MDTextField):
         self.write_tab = False
         self.multiline = False
         self.helper_text_mode = "persistent"
-        self.selection_text = "readonly"
 
     def delete_selection(self, from_undo=False):
+        if self.selection_text == "":
+            self.cursor = (len(self.text), 0)
         return
+    
+    def on_selection_text(self, instance, value):
+        if value == "":
+            self.cursor = (len(self.text), 0)
+        return
+    
+    def do_cursor_movement(self, action, control=False, alt=False):
+        if action == "cursor_left":
+            self.cursor = (len(self.text), 0)
 
     def do_backspace(self, from_undo=False, mode='bkspc'):
         if self.text != "":
@@ -29,6 +39,8 @@ class LoanValueInput(MDTextField):
 
     def insert_text(self, substring, from_undo = False):
         if not substring.isdigit():
+            return
+        if self.selection_text != '':
             return
         cursor_column, cusror_row = self.cursor
         text = self._lines[cusror_row]
@@ -55,7 +67,18 @@ class TermsValueInput(MDTextField):
         self.helper_text_mode = "persistent"
 
     def delete_selection(self, from_undo=False):
+        if self.selection_text == "":
+            self.cursor = (len(self.text), 0)
         return
+    
+    def on_selection_text(self, instance, value):
+        if value == "":
+            self.cursor = (len(self.text), 0)
+        return
+    
+    def do_cursor_movement(self, action, control=False, alt=False):
+        if action == "cursor_left":
+            self.cursor = (len(self.text), 0)
 
     def do_backspace(self, from_undo=False, mode='bkspc'):
         if self.text != "":
@@ -96,7 +119,18 @@ class InterestValueInput(MDTextField):
                 self.text = ""
 
     def delete_selection(self, from_undo=False):
+        if self.selection_text == "":
+            self.cursor = (len(self.text), 0)
         return
+    
+    def on_selection_text(self, instance, value):
+        if value == "":
+            self.cursor = (len(self.text), 0)
+        return
+    
+    def do_cursor_movement(self, action, control=False, alt=False):
+        if action == "cursor_left":
+            self.cursor = (len(self.text), 0)
 
     def do_backspace(self, from_undo=False, mode='bkspc'):
         if self.text != "":
