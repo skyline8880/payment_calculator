@@ -36,6 +36,8 @@ add data in coll:
 ### make changes in ```__init__.py```
 get to venv\Lib\site-packages\kivymd find ```__init__.py``` file and add 2 imports:
 * ```python 
-    import kivymd.icon_definitions # NOQA```
+    import kivymd.icon_definitions # NOQA
+    ```
 * ```python
-    import kivymd.uix.card # NOQA```
+    import kivymd.uix.card # NOQA
+    ```
