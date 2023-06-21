@@ -25,7 +25,7 @@ write command below in terminal
 ```
 
 ### specify main.spec file
-add imports in the highes row in main.spec file:
+add imports in the first row in ```main.spec``` file:
 * ```python
     from kivy_deps import sdl2, glew
     ```
