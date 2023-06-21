@@ -10,7 +10,7 @@ python -m venv venv
 
 make shure your environment is activated
 
-### install all requirements using [pip] (https://pip.pypa.io/en/stable/)
+### install all requirements using ```[pip](https://pip.pypa.io/en/stable/)```
 
 ```bash
 pip install -r requirements.txt
