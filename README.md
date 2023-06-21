@@ -12,7 +12,6 @@ make shure your environment is activated
 
 ### requirements
 
-use [pip] (https://pip.pypa.io/en/stable/) to install requirements
 ```bash
 pip install -r requirements.txt
 ```
