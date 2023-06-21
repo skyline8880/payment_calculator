@@ -21,7 +21,7 @@ pip install -r requirements.txt
 write command below in terminal
 
 ```bash
---onefile --windowed --add-data 'debt.png' --icon=debt_ico.ico main.py
+pyinstaller --onefile --windowed --add-data 'debt.png' --icon=debt_ico.ico main.py
 ```
 
 ### specify main.spec file
@@ -41,3 +41,4 @@ get to venv\Lib\site-packages\kivymd find ```__init__.py``` file and add 2 impor
 * ```python
     import kivymd.uix.card # NOQA
     ```
+at last row.
